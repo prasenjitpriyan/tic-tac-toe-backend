@@ -1,9 +1,14 @@
-const express = require('express');
-const app = require('express')();
-const server = require('http').createServer(app);
-const io = require('socket.io')(server);
-const port = process.env.PORT || 8080;
-const path = require('path');
+const { createServer } = require("http");
+
+const httpServer = createServer();
+const io = require("socket.io")(httpServer, {
+  cors: {
+    origin: "https://tic-tac-toe-pd.onrender.com",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["my-custom-header"],
+    credentials: true
+  }
+});
 
 const allUsers = {};
 const allRooms = [];
@@ -81,10 +86,4 @@ io.on("connection", (socket) => {
   });
 });
 
-app.get("/", (req, res) => {
-  res.send("API is running Successfully")
-})
-
-server.listen(port, function () {
-  console.log(`Listening on port ${port}`);
-});
+httpServer.listen(8080);
